@@ -8,12 +8,6 @@
 ########################################################################################################
 # Jaroslav Borodavka, 08.08.2024
 
-# required packages
-#using CairoMakie
-#using DifferentialEquations
-#using HCubature
-using LaTeXStrings
-
 ########################################################################################################
 ## functions for the realization of multiscale and limit processes, different examples
 ########################################################################################################

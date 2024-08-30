@@ -6,9 +6,6 @@
 ########################################################################################################
 # Jaroslav Borodavka, 21.08.2024
 
-# required packages
-#using Optim
-
 ########################################################################################################
 ## optimizers for the MDE
 ########################################################################################################
@@ -16,7 +13,7 @@
 ## limit model: 1-dimensional Ornstein-Uhlenbeck process / Langevin process with a quadratic potential ##
 
 @doc raw"""
-    MDE(data::Array{Real, 1}, limit_model::String, prior_parameter::Real, ϑ_initial::Float64; verbose = false)
+    MDE(data::Array{Float64, 1}, limit_model::String, prior_parameter::Float64, ϑ_initial::Float64; verbose = false)
 
 Return MDE value for given `data` in form of a time series, a defining `limit_model`, a prior estimation parameter `prior_parameter`, and an initial point `ϑ_initial`
 of the involved optimization procedure.
@@ -33,9 +30,9 @@ is, in the given case, quadratic, i.e. ``V(x)=x^2/2``.
 
 ---
 # Arguments
-- `data::Array{Real, 1}`:       one-dimensional time series ``X_ϵ``.
+- `data::Array{Float64, 1}`:       one-dimensional time series ``X_ϵ``.
 - `limit_model::String`:        defining limit model; thus far only supports "Langevin" and "Fast Chaotic Noise".
-- `prior_parameter::Real`:      prior estimation parameter; limit diffusion parameter in the "Langevin" case and limit drift parameter in the "Fast Chaotic Noise" case.
+- `prior_parameter::Float64`:      prior estimation parameter; limit diffusion parameter in the "Langevin" case and limit drift parameter in the "Fast Chaotic Noise" case.
 - `ϑ_initial::Float64`:         initial point of the numerical optimization procedure.
 - 'verbose::Bool=false':        if `verbose = true`, then detailed information on the optimization will be printed in real-time.
 
@@ -51,7 +48,7 @@ julia> MDE(data, "Fast Chaotic Noise", limit_drift_parameter, 10.0)
 ---
 See also [`Δ_Gaussian1D_grad`](@ref).
 """
-function MDE(data::Array{Real, 1}, limit_model::String, prior_parameter::Real, ϑ_initial::Float64; verbose = false)
+function MDE(data::Array{Float64, 1}, limit_model::String, prior_parameter::Float64, ϑ_initial::Float64; verbose = false)
 
     # specifying boundary constraints, since the parameter lies in (0, ∞)
     lower = 0.0
@@ -90,7 +87,7 @@ end
 ## limit model: 1-dimensional Langevin process with a general potential V ##
 
 @doc raw"""
-    MDE(data::Array{Real, 1}, limit_model::String, V::Function, prior_parameter::Real, ϑ_initial::Float64; verbose = false)
+    MDE(data::Array{Float64, 1}, limit_model::String, V::Function, prior_parameter::Float64, ϑ_initial::Float64; verbose = false)
 
 Return MDE value for given `data` in form of a time series, a defining `limit_model`, a general potential `V`, a prior estimation parameter `prior_parameter`, and an initial point `ϑ_initial`
 of the involved optimization procedure.
@@ -106,10 +103,10 @@ obtained from a multiscale SDE, ``\Delta_T`` is the associated cost functional o
 
 ---
 # Arguments
-- `data::Array{Real, 1}`:    one-dimensional time series ``X_ϵ``.
+- `data::Array{Float64, 1}`:    one-dimensional time series ``X_ϵ``.
 - `limit_model::String`:        defining limit model; thus far only supports "Langevin" and "Fast Chaotic Noise".
 - `V::Function`:                potential ``V`` that defines the invariant density of the limit model.
-- `prior_parameter::Real`:   prior estimation parameter; limit diffusion parameter in the "Langevin" case and limit drift parameter in the "Fast Chaotic Noise" case.
+- `prior_parameter::Float64`:   prior estimation parameter; limit diffusion parameter in the "Langevin" case and limit drift parameter in the "Fast Chaotic Noise" case.
 - `ϑ_initial::Float64`:         initial point of the numerical optimization procedure.
 - 'verbose::Bool=false':              if `verbose = true`, then detailed information on the optimization will be printed in real-time.
 
@@ -129,7 +126,7 @@ julia> MDE(data, "Fast Chaotic Noise", V, limit_drift_parameter, 0.8)
 ---
 See also [`Δ_grad_ϑ`](@ref), [`Δ_grad_Σ`](@ref), [`μ`](@ref).
 """
-function MDE(data::Array{Real, 1}, limit_model::String, V::Function, prior_parameter::Real, ϑ_initial::Float64; verbose = false)
+function MDE(data::Array{Float64, 1}, limit_model::String, V::Function, prior_parameter::Float64, ϑ_initial::Float64; verbose = false)
     # specifying boundary constraints, since the parameter lies in (0, ∞)
     lower = 0.0
     upper = Inf
@@ -173,7 +170,7 @@ end
 ## limit model: 2-dimensional Ornstein-Uhlenbeck process / Langevin process with a quadratic potential ##
 
 @doc raw"""
-    MDE(data::Array{Real, 2}, limit_diffusion::Array{Real, 2}, ϑ_initial::Array{Real, 2}; verbose = false)
+    MDE(data::Array{Float64, 2}, limit_diffusion::Array{Float64, 2}, ϑ_initial::Array{Float64, 2}; verbose = false)
 
 Return MDE value for given `data` in form of a time series, a prior estimation parameter `limit_diffusion`, and an initial point `ϑ_initial`
 of the involved optimization procedure.
@@ -190,9 +187,9 @@ The initial point `ϑ_initial` must satisfy certain parameter constraints since 
 
 ---
 # Arguments
-- `data::::Array{Real, 2}`:             two-dimensional time series ``X_ϵ``.
-- `limit_diffusion::Array{Real, 2}`:    positive definite limit diffusion matrix ``\Sigma \in \mathbb{R}^{2 \times 2}``.
-- `ϑ_initial::Array{Real, 2}`:          initial point ``\vartheta_0 \in \mathbb{R}^{2 \times 2}`` of the numerical optimization procedure.
+- `data::::Array{Float64, 2}`:             two-dimensional time series ``X_ϵ``.
+- `limit_diffusion::Array{Float64, 2}`:    positive definite limit diffusion matrix ``\Sigma \in \mathbb{R}^{2 \times 2}``.
+- `ϑ_initial::Array{Float64, 2}`:          initial point ``\vartheta_0 \in \mathbb{R}^{2 \times 2}`` of the numerical optimization procedure.
 - 'verbose::Bool=false':                if `verbose = true`, then detailed information on the optimization will be printed in real-time.
 
 ---
@@ -214,7 +211,7 @@ julia> MDE(data, Σ, ϑ_initial)
 ---
 See also [`Δ_Gaussian2D`](@ref).
 """
-function MDE(data::Array{Real, 2}, limit_diffusion::Array{Real, 2}, ϑ_initial::Array{Real, 2}; verbose = false)
+function MDE(data::Array{Float64, 2}, limit_diffusion::Array{Float64, 2}, ϑ_initial::Array{Float64, 2}; verbose = false)
 
     # cost functional and gradient
     J(ϑ) = Δ_Gaussian2D(data, ϑ, limit_diffusion)
