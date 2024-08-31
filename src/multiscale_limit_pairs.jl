@@ -69,8 +69,8 @@ function Fast_OU_ϵ(x0, y0; func_config, ϵ=0.1, T=100, dt=1e-3)
 
     N = convert(Int64, T/dt) - 1
   
-    X = Array{Float64}(undef, 1, N+1)
-    Y = Array{Float64}(undef, 1, N+1)
+    X = Vector{Float64}(undef, N+1)
+    Y = Vector{Float64}(undef, N+1)
     X[1] = x0
     Y[1] = y0
     
@@ -122,7 +122,7 @@ function Fast_OU_∞(X0; func_config, T=100, dt=1e-3)
 
   N = convert(Int64, T/dt) - 1
 
-  X = Array{Float64}(undef, 1, N+1)
+  X = Vector{Float64}(undef, N+1)
   X[1] = X0
   
   for k in 1:N
@@ -278,8 +278,8 @@ function Langevin_ϵ(x0; func_config, α, σ, ϵ=0.1, T=100, dt=1e-3)
 
   N = convert(Int64, T/dt) - 1
 
-  X = Array{Float64}(undef, 1, N+1)
-  Y = Array{Float64}(undef, 1, N+1)
+  X = Vector{Float64}(undef, N+1)
+  Y = Vector{Float64}(undef, N+1)
   X[1] = x0
   Y[1] = x0/ϵ
   
@@ -609,9 +609,9 @@ function Burger_ϵ(x0, y0, z0; ν, q1, q2, ϵ=0.1, T=100, dt=1e-3)
   
   N = convert(Int64, T/dt) - 1
 
-  X = Array{Float64}(undef, 1, N+1)
-  Y = Array{Float64}(undef, 1, N+1)
-  Z = Array{Float64}(undef, 1, N+1)
+  X = Vector{Float64}(undef, N+1)
+  Y = Vector{Float64}(undef, N+1)
+  Z = Vector{Float64}(undef, N+1)
   X[1] = x0
   Y[1] = y0
   Z[1] = z0
@@ -669,7 +669,7 @@ function Burger_∞(X0; nu, q1, q2, T=100, dt=1e-3)
 
   N = convert(Int64, T/dt) - 1
 
-  X = Array{Float64}(undef, 1, N+1)
+  X = Vector{Float64}(undef, N+1)
   X[1] = X0
 
   for k in 1:N
@@ -768,7 +768,7 @@ function Fast_chaotic_∞(X0; A, B, σ, T=100, dt=1e-3)
 
   N = convert(Int64, T/dt) - 1
 
-  X = Array{Float64}(undef, 1, N+1)
+  X = Vector{Float64}(undef, N+1)
   X[1] = X0
 
   for k in 1:N
