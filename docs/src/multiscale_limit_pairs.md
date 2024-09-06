@@ -17,22 +17,16 @@ The majority of the following functions give realizations of the multiscale proc
 
 ## Functions
 ```@docs
-Fast_OU_ϵ
-Fast_OU_∞
+Fast_OU
 LDA
 NLDAM
 NSDP
-Langevin_ϵ
+Langevin
 K
-Langevin_∞
 LDO
 NLDO
-Langevin_ϵ_2D
-Langevin_∞_2D
-Burger_ϵ
-Burger_∞
-Fast_chaotic_ϵ
-Fast_chaotic_∞
+Burger
+Fast_chaotic
 produce_trajectory
 ```
 

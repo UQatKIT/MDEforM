@@ -41,7 +41,7 @@ is, in the given case, quadratic, i.e. ``V(x)=x^2/2``.
 ```julia-repl
 julia> using MDEforM
 julia> limit_drift_parameter = 1.0
-julia> data = Fast_chaotic_ϵ([1.0, 1.0, 1.0, 1.0], A=-limit_drift_parameter, B=0.0, λ=2/45, ϵ=0.1, T=1000)
+julia> data = Fast_chaotic([1.0, 1.0, 1.0, 1.0], A=-limit_drift_parameter, B=0.0, λ=2/45, ϵ=0.1, T=1000)
 julia> MDE(data, "Fast Chaotic Noise", limit_drift_parameter, 10.0)
 ```
 
@@ -118,7 +118,7 @@ $ julia --threads 10 --project=. # start julia with 10 threads and activate proj
 ```julia-repl
 julia> using MDEforM
 julia> limit_drift_parameter = 1.0
-julia> data = Fast_chaotic_ϵ([1.0, 1.0, 1.0, 1.0], A=limit_drift_parameter, B=1.0, λ=2/45, ϵ=10^(-3/2), T=100)
+julia> data = Fast_chaotic([1.0, 1.0, 1.0, 1.0], A=limit_drift_parameter, B=1.0, λ=2/45, ϵ=10^(-3/2), T=100)
 julia> V = NLDO()[1]
 julia> MDE(data, "Fast Chaotic Noise", V, limit_drift_parameter, 0.8)
 ```
@@ -203,7 +203,7 @@ julia> p1_prime, p2_prime = (x-> cos(x), x -> 1/2*cos(x))
 julia> CorrK = [K(p1, σ) 0 ; 0 K(p2, σ)]
 julia> A = CorrK*M # true parameter; the parameter that ought to be estimated
 julia> Σ = σ*CorrK
-julia> data = Langevin_ϵ_2D([-5.0, -5.0], func_config=(p1_prime, p2_prime), M=M, σ=σ, ϵ=0.1, T=1000)[1]
+julia> data = Langevin([-5.0, -5.0], [0.0, 0.0], func_config=(p1_prime, p2_prime), M=M, σ=σ, ϵ=0.1, T=1000)[1]
 julia> ϑ_initial = [3.0 0.5*Σ[1]; 0.5*Σ[4] 6.0]
 julia> MDE(data, Σ, ϑ_initial)
 ```

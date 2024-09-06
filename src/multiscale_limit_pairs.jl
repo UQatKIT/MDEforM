@@ -17,7 +17,7 @@
 # general mutliscale system for fast Ornstein-Uhlenbeck process
 # @doc raw""" """ is a command combo to avoid escaping latex commands as \\epsilon
 @doc raw"""
-    Fast_OU_ϵ(x0::Real, y0::Real; <keyword arguments>)
+    Fast_OU(x0::Real, y0::Real; <keyword arguments>)
 
 Return a 2-dimensional fast-slow Ornstein-Uhlenbeck process starting at `(x0, y0)` as a discretized time series.
 
@@ -44,25 +44,25 @@ Here, ``σ'`` is the first derivative of ``σ``. A simple Euler-Maruyama discret
 ```julia
 # linear drift with additive noise
 T = 10.0
-trajectory = Fast_OU_ϵ(1.0, 1.0, func_config=LDA(), ϵ=0.1, T=T)
-fig = produce_trajectory_1D(trajectory, T)
+trajectory = Fast_OU(1.0, 1.0, func_config=LDA(), ϵ=0.1, T=T)
+fig = produce_trajectory(trajectory, T)
 #save("trajectory_fast_OU_process.pdf", fig)
 
 # nonlinear drift with additive and multiplicative noise
 T = 10.0
-trajectory = Fast_OU_ϵ(1.0, 1.0, func_config=NLDAM(), ϵ=0.1, T=T)
-fig = produce_trajectory_1D(trajectory, T)
+trajectory = Fast_OU(1.0, 1.0, func_config=NLDAM(), ϵ=0.1, T=T)
+fig = produce_trajectory(trajectory, T)
 
 # nonlinear drift with additive and multiplicative noise, non-symmetric double-well potential
 T = 10.0
-trajectory = Fast_OU_ϵ(1.0, 1.0, func_config=NSDP(), ϵ=0.1, T=T)
-fig = produce_trajectory_1D(trajectory, T)
+trajectory = Fast_OU(1.0, 1.0, func_config=NSDP(), ϵ=0.1, T=T)
+fig = produce_trajectory(trajectory, T)
 ```
 
 ---
-See also [`Fast_OU_∞`](@ref), [`LDA`](@ref), [`NLDAM`](@ref), [`NSDP`](@ref).
+See also [`LDA`](@ref), [`NLDAM`](@ref), [`NSDP`](@ref).
 """
-function Fast_OU_ϵ(x0::Real, y0::Real; func_config::Tuple{3, Function}, ϵ::Real=0.1, T::Real=100, dt::Real=1e-3)
+function Fast_OU(x0::Real, y0::Real; func_config::Tuple{3, Function}, ϵ::Real=0.1, T::Real=100, dt::Real=1e-3)
     h = func_config[1]
     σ = func_config[2]
     σ_prime = func_config[3]
@@ -85,9 +85,9 @@ end
 
 # general limit process for fast Ornstein-Uhlenbeck process
 @doc raw"""
-    Fast_OU_∞(X0::Real; <keyword arguments>)
+    Fast_OU(X0::Real; <keyword arguments>)
 
-Return a one-dimensional limit process, homogenized from the fast-slow Ornstein-Uhlenbeck process figuring in [`Fast_OU_ϵ`](@ref), starting at `X0` as a discretized time series.
+Return a one-dimensional limit process, homogenized from the fast-slow Ornstein-Uhlenbeck process, starting at `X0` as a discretized time series.
 
 The corresponding stochastic differential equation is defined for ``t \in [0,T]`` as
 ```math
@@ -95,7 +95,7 @@ The corresponding stochastic differential equation is defined for ``t \in [0,T]`
   dX(t) = \bar{h}(X(t)) dt - \sqrt{2 σ(X(t))^2} dW(t), \quad X(0) = X_0.
 \end{aligned}
 ```
-Here, ``\bar{h}`` is the average of ``h`` with respect to the invariant measure of the fast process ``Y_ϵ`` coming from [`Fast_OU_ϵ`](@ref). 
+Here, ``\bar{h}`` is the average of ``h`` with respect to the invariant measure of the fast process ``Y_ϵ`` of the fast-slow Ornstein-Uhlenbeck process. 
 A simple Euler-Maruyama discretization is implemented for the generation of the time series.
 
 ---
@@ -110,13 +110,13 @@ A simple Euler-Maruyama discretization is implemented for the generation of the 
 ```julia-repl
 julia> h_aver = x -> -x   # corresponds to an ordinary Ornstein-Uhlenbeck process
 julia> σ = x -> sqrt(2)
-julia> Fast_OU_∞(1.0, func_config=(h_aver, σ))
+julia> Fast_OU(1.0, func_config=(h_aver, σ))
 ```
 
 ---
-See also [`Fast_OU_ϵ`](@ref), [`LDA`](@ref), [`NLDAM`](@ref), [`NSDP`](@ref).
+See also [`LDA`](@ref), [`NLDAM`](@ref), [`NSDP`](@ref).
 """
-function Fast_OU_∞(X0::Real; func_config::NTuple{3, Function}, T::Real=100, dt::Real=1e-3)
+function Fast_OU(X0::Real; func_config::NTuple{2, Function}, T::Real=100, dt::Real=1e-3)
   h_aver = func_config[1]
   σ = func_config[2]
 
@@ -137,7 +137,7 @@ end
 @doc raw"""
     LDA(A::Real=1, σ::Real=1)
 
-Return a tuple of functions used for the definition of [`Fast_OU_ϵ`](@ref).
+Return a tuple of functions used for the definition of [`Fast_OU`](@ref).
 
 The returned functions are
 ```math
@@ -155,7 +155,7 @@ They yield a linear drift with additive noise.
 - `σ::Real=1`:        positive real number.
 
 ---
-See also [`Fast_OU_ϵ`](@ref).
+See also [`Fast_OU`](@ref).
 """
 function LDA(A::Real=1, σ::Real=1)
   (x -> -A*x, x -> sqrt(σ), x -> 0)
@@ -165,7 +165,7 @@ end
 @doc raw"""
     NLDAM(A::Real=2, B::Real=10, σ_a::Real=1, σ_b::Real=1)
 
-Return a tuple of functions used for the definition of [`Fast_OU_ϵ`](@ref).
+Return a tuple of functions used for the definition of [`Fast_OU`](@ref).
 
 The returned functions are
 ```math
@@ -185,7 +185,7 @@ They yield a nonlinear drift with additive and multiplicative noise.
 - `σ_b::Real=1`:        positive real number.
 
 ---
-See also [`Fast_OU_ϵ`](@ref).
+See also [`Fast_OU`](@ref).
 """
 function NLDAM(A::Real=2, B::Real=10, σ_a::Real=1, σ_b::Real=1)
   h = x -> A*x - B*x^3
@@ -199,7 +199,7 @@ end
 @doc raw"""
     NSDP(A::Real=1, B::Real=2, C::Real=5, σ_a::Real=1, σ_b::Real=1)
 
-Return a tuple of functions used for the definition of [`Fast_OU_ϵ`](@ref).
+Return a tuple of functions used for the definition of [`Fast_OU`](@ref).
 
 The returned functions are
 ```math
@@ -220,7 +220,7 @@ They yield a nonlinear, non-symmetric double-well potential drift with additive 
 - `σ_b::Real=1`:        positive real number.
 
 ---
-See also [`Fast_OU_ϵ`](@ref).
+See also [`Fast_OU`](@ref).
 """
 function NSDP(A::Real=1, B::Real=2, C::Real=5, σ_a::Real=1, σ_b::Real=1)
   h = x -> A*x + B*x^2 - C*x^3
@@ -234,9 +234,9 @@ end
 
 # general multiscale system for overdamped Langevin process with large-scale potential V and fast oscillating part p
 @doc raw"""
-    Langevin_ϵ(x0::Real; <keyword arguments>)
+    Langevin(x0::Real, y0::Real; <keyword arguments>)
 
-Return a 2-dimensional overdamped Langevin process with a large-scale potential and a fast oscillating part starting at `(x0, y0/ϵ)` as a discretized time series.
+Return a 2-dimensional overdamped Langevin process with a large-scale potential and a fast oscillating part starting at `(x0, y0)` as a discretized time series.
 
 The corresponding stochastic differential equation is defined for ``t \in [0,T]`` as
 ```math
@@ -251,6 +251,7 @@ A simple Euler-Maruyama discretization is implemented for the generation of the 
 ---
 # Arguments
 - `x0::Real`:                               initial point ``x_0`` of slow process ``X_ϵ``.
+- `y0::Real`:                               initial point ``y_0`` of fast process ``Y_ϵ``.
 - `func_config::NTuple{4, Function}`:       collection of the functions ``V, V', p`` and ``p'``.
 - `α::Real`:                                non-negative drift parameter ``α``.
 - `σ::Real`:                                positive diffusion parameter ``σ``.
@@ -263,15 +264,15 @@ A simple Euler-Maruyama discretization is implemented for the generation of the 
 ```julia
 # quadratic potential V with sine oscillation p
 T = 10.0
-trajectory = Langevin_ϵ(1.0, func_config=LDO(), α=2.0, σ=1.0, ϵ=0.1, T=T)
-fig = produce_trajectory_1D(trajectory, T)
+trajectory = Langevin(1.0, 3.0, func_config=LDO(), α=2.0, σ=1.0, ϵ=0.1, T=T)
+fig = produce_trajectory(trajectory, T)
 #save("trajectory_Langevin_process.pdf", fig)
 ```
 
 ---
-See also [`Langevin_∞`](@ref), [`LDO`](@ref), [`NLDO`](@ref).
+See also [`LDO`](@ref), [`NLDO`](@ref).
 """
-function Langevin_ϵ(x0::Real; func_config::NTuple{4, Function}, α::Real, σ::Real, ϵ::Real=0.1, T::Real=100, dt::Real=1e-3)
+function Langevin(x0::Real, y0::Real; func_config::NTuple{4, Function}, α::Real, σ::Real, ϵ::Real=0.1, T::Real=100, dt::Real=1e-3)
 
   V_prime = func_config[2]
   p_prime = func_config[4]
@@ -281,7 +282,7 @@ function Langevin_ϵ(x0::Real; func_config::NTuple{4, Function}, α::Real, σ::R
   X = Vector{Float64}(undef, N+1)
   Y = Vector{Float64}(undef, N+1)
   X[1] = x0
-  Y[1] = x0/ϵ
+  Y[1] = y0
   
   for k in 1:N
     dW = sqrt(dt)*randn(1)[1]
@@ -306,7 +307,7 @@ Return corrective constant of the cell problem of the homogenization in the over
 - `σ`:                positive diffusion parameter of slow process ``X_ϵ``.
 
 ---
-See also [`Langevin_∞`](@ref).
+See also [`Langevin`](@ref).
 """
 function K(p::Function, σ::Real)
   Z1 = HCubature.hquadrature(x -> exp(p(x)/σ), 0, 2pi)[1]
@@ -316,9 +317,9 @@ function K(p::Function, σ::Real)
 end
 
 @doc raw"""
-    Langevin_∞(X0::Real; <keyword arguments>)
+    Langevin(X0::Real; <keyword arguments>)
 
-Return a one-dimensional overdamped limit Langevin process, homogenized from the multiscale overdamped Langevin process figuring in [`Langevin_ϵ`](@ref), starting at `X0` as a discretized time series.
+Return a one-dimensional overdamped limit Langevin process, homogenized from the multiscale overdamped Langevin process, starting at `X0` as a discretized time series.
 
 The corresponding stochastic differential equation is defined for ``t \in [0,T]`` as
 ```math
@@ -339,9 +340,9 @@ A simple Euler-Maruyama discretization is implemented for the generation of the 
 - `dt::Real=1e-3`:                          time discretization step used in the Euler-Maruyama scheme.
 
 ---
-See also [`Langevin_ϵ`](@ref), [`LDO`](@ref), [`NLDO`](@ref).
+See also [`LDO`](@ref), [`NLDO`](@ref).
 """
-function Langevin_∞(X0::Real; func_config::NTuple{4, Function}, α::Real, σ::Real, T::Real=100, dt::Real=1e-3)
+function Langevin(X0::Real; func_config::NTuple{4, Function}, α::Real, σ::Real, T::Real=100, dt::Real=1e-3)
   
   V_prime = func_config[2]
   p = func_config[3]
@@ -366,7 +367,7 @@ end
 @doc raw"""
     LDO()
 
-Return a tuple of functions used for the definition of [`Langevin_ϵ`](@ref) and [`Langevin_∞`](@ref).
+Return a tuple of functions used for the definition of [`Langevin`](@ref).
 
 The returned functions are
 ```math
@@ -380,7 +381,7 @@ The returned functions are
 They yield a quadratic potential drift with a sine oscillation.
 
 ---
-See also [`Langevin_ϵ`](@ref), [`Langevin_∞`](@ref).
+See also [`Langevin`](@ref).
 """
 function LDO()
   V = x -> x^2/2
@@ -395,7 +396,7 @@ end
 @doc raw"""
     NLDO()
 
-Return a tuple of functions used for the definition of [`Langevin_ϵ`](@ref) and [`Langevin_∞`](@ref).
+Return a tuple of functions used for the definition of [`Langevin`](@ref).
 
 The returned functions are
 ```math
@@ -443,7 +444,7 @@ drift_fig
 ```
 
 ---
-See also [`Langevin_ϵ`](@ref), [`Langevin_∞`](@ref).
+See also [`Langevin`](@ref).
 """
 function NLDO()
   V = x -> -x^2/2 + x^4/4
@@ -458,9 +459,9 @@ end
 
 # general multiscale system for overdamped Langevin process with quadratic potential and fast separable oscillating part in 2D
 @doc raw"""
-    Langevin_ϵ_2D(x0::Vector{<:Real}; <keyword arguments>)
+    Langevin(x0::Vector{<:Real}, y0::Vector{<:Real}; <keyword arguments>)
 
-Return a 4-dimensional overdamped Langevin process with a quadratic potential and a fast separable oscillating part starting at `(x0, y0/ϵ)` as a discretized time series.
+Return a 4-dimensional overdamped Langevin process with a quadratic potential and a fast separable oscillating part starting at `(x0, y0)` as a discretized time series.
 
 The corresponding stochastic differential equation is defined for ``t \in [0,T]`` as
 ```math
@@ -483,6 +484,7 @@ A simple Euler-Maruyama discretization is implemented for the generation of the 
 ---
 # Arguments
 - `x0::Vector{<:Real}`:                     initial point ``x_0 \in \mathbb{R}^{2}`` of slow process ``X_ϵ``.
+- `y0::Vector{<:Real}`:                     initial point ``y_0 \in \mathbb{R}^{2}`` of slow process ``Y_ϵ``.
 - `func_config::NTuple{2, Function}`:       collection of the ``2\pi``-periodic functions ``p_1'`` and ``p_2'``.
 - `M::Array{<:Real, 2}`:                    positive definite drift matrix ``M \in \R^{2 \times 2}``.
 - `σ::Real`:                                positive diffusion parameter ``σ``.
@@ -494,21 +496,18 @@ A simple Euler-Maruyama discretization is implemented for the generation of the 
 # Examples
 ```julia
 # quadratic potential V and fast separable oscillating part in 2D
-trajectory = Langevin_ϵ_2D([-5.0, -5.0], func_config=(x-> cos(x), x -> 1/2*cos(x)), M=[4 2;2 3], σ=5.0, ϵ=0.05, T=10.0)
-fig = produce_trajectory_2D(trajectory)
+trajectory = Langevin([-5.0, -5.0], [0.0, 0.0], func_config=(x-> cos(x), x -> 1/2*cos(x)), M=[4 2;2 3], σ=5.0, ϵ=0.05, T=10.0)
+fig = produce_trajectory(trajectory)
 #save("trajectory_Langevin_process_2D.pdf", fig)
 ```
-
----
-See also [`Langevin_∞_2D`](@ref).
 """
-function Langevin_ϵ_2D(x0::Vector{<:Real}; func_config::NTuple{2, Function}, M::Array{<:Real, 2}, σ::Real, ϵ::Real=0.1, T::Real=100, dt::Real=1e-3)
+function Langevin(x0::Vector{<:Real}, y0::Vector{<:Real}; func_config::NTuple{2, Function}, M::Array{<:Real, 2}, σ::Real, ϵ::Real=0.1, T::Real=100, dt::Real=1e-3)
   N = convert(Int64, T/dt) - 1
 
   X = Array{Float64}(undef, 2, N+1)
   Y = Array{Float64}(undef, 2, N+1)
   X[:,1] = x0
-  Y[:,1] = x0/ϵ
+  Y[:,1] = y0
   
   for k in 1:N
     dW1 = sqrt(dt)*randn(1)[1]
@@ -525,9 +524,9 @@ end
 
 # general limit process for overdamped Langevin process with quadratic potential and fast separable oscillating part in 2D
 @doc raw"""
-    Langevin_∞_2D(X0::Vector{<:Real}; <keyword arguments>)
+    Langevin(X0::Vector{<:Real}; <keyword arguments>)
 
-Return a 2-dimensional overdamped limit Langevin process, homogenized from the multiscale overdamped Langevin process figuring in [`Langevin_ϵ_2D`](@ref),  starting at `X0` as a discretized time series.
+Return a 2-dimensional overdamped limit Langevin process, homogenized from the multiscale overdamped Langevin process,  starting at `X0` as a discretized time series.
 
 The corresponding stochastic differential equation is defined for ``t \in [0,T]`` as
 ```math
@@ -546,11 +545,8 @@ A simple Euler-Maruyama discretization is implemented for the generation of the 
 - `σ::Real`:                                positive diffusion parameter ``σ``.
 - `T::Real=100`:                            time horizon of time series.
 - `dt::Real=1e-3`:                           time discretization step used in the Euler-Maruyama scheme.
-
----
-See also [`Langevin_ϵ_2D`](@ref).
 """
-function Langevin_∞_2D(X0::Vector{<:Real}; func_config::NTuple{2, Function}, M::Array{<:Real, 2},  σ::Real, T::Real=100, dt::Real=1e-3)
+function Langevin(X0::Vector{<:Real}; func_config::NTuple{2, Function}, M::Array{<:Real, 2},  σ::Real, T::Real=100, dt::Real=1e-3)
 
   CorrK = [K(func_config[1], σ) 0 ; 0 K(func_config[2], σ)]
   A = CorrK*M
@@ -576,7 +572,7 @@ end
 
 # general multiscale system for truncated Burger's equation
 @doc raw"""
-    Burger_ϵ(x0::Real, y0::Real, z0::Real; <keyword arguments>)
+    Burger(x0::Real, y0::Real, z0::Real; <keyword arguments>)
 
 Return a three-dimensional process described through a truncated Burger's equation starting at `(x0, y0, z0)` as a discretized time series.
 
@@ -601,11 +597,8 @@ A simple Euler-Maruyama discretization is implemented for the generation of the 
 - `ϵ::Real=0.1`:      positive small scale parameter ``ϵ``.
 - `T::Real=100`:      time horizon of time series.
 - `dt::Real=1e-3`:    time discretization step used in the Euler-Maruyama scheme.
-
----
-See also [`Burger_∞`](@ref).
 """
-function Burger_ϵ(x0::Real, y0::Real, z0::Real; ν::Real, q1::Real, q2::Real, ϵ::Real=0.1, T::Real=100, dt::Real=1e-3)
+function Burger(x0::Real, y0::Real, z0::Real; ν::Real, q1::Real, q2::Real, ϵ::Real=0.1, T::Real=100, dt::Real=1e-3)
   
   N = convert(Int64, T/dt) - 1
 
@@ -630,9 +623,9 @@ end
 
 # general limit process for truncated Burger's equation
 @doc raw"""
-    Burger_∞(X0::Real; <keyword arguments>)
+    Burger(X0::Real; <keyword arguments>)
 
-Return a one-dimensional process described through a limit truncated Burger's equation, homogenized from the multiscale truncated Burger's equation figuring in [`Burger_ϵ`](@ref), starting at `X0` as a discretized time series.
+Return a one-dimensional process described through a limit truncated Burger's equation, homogenized from the multiscale truncated Burger's equation, starting at `X0` as a discretized time series.
 
 The corresponding stochastic differential equation is defined for ``t \in [0,T]`` as
 ```math
@@ -655,12 +648,9 @@ A simple Euler-Maruyama discretization is implemented for the generation of the 
 - `q1::Real`:         positive parameter ``q_1``.
 - `q2::Real`:         positive parameter ``q_2``.
 - `T::Real=100`:      time horizon of time series.
-- `dt:Real=1e-3`:     time discretization step used in the Euler-Maruyama scheme.
-
----
-See also [`Burger_ϵ`](@ref).
+- `dt::Real=1e-3`:     time discretization step used in the Euler-Maruyama scheme.
 """
-function Burger_∞(X0::Real; ν::Real, q1, q2, T=100, dt=1e-3)
+function Burger(X0::Real; ν::Real, q1, q2, T=100, dt=1e-3)
 
   A = ν + q1^2/396 + q2^2/352
   B = 1/12
@@ -684,7 +674,7 @@ end
 
 # general multiscale system for fast chaotic noise solved with DifferentialEquations.jl using a fourth order Runge-Kutta scheme
 @doc raw"""
-    Fast_chaotic_ϵ(xy0; <keyword arguments>)
+    Fast_chaotic(xy0; <keyword arguments>)
 
 Return the 4-dimensional solution path of a fast chaotic noise system starting at `xy0` as a discretized time series.
 
@@ -707,11 +697,8 @@ The ODE is solved with a fourth order Runge-Kutta scheme of the [DifferentialEqu
 - `λ::Real`:              positive parameter ``λ``.
 - `T::Real=100`:          time horizon of time series.
 - `dt::Real=1e-3`:        time discretization step used in the ODE solver.
-
----
-See also [`Fast_chaotic_∞`](@ref).
 """
-function Fast_chaotic_ϵ(xy0::Vector{<:Real}; A::Real, B::Real, λ::Real, ϵ::Real=0.1, T::Real=100, dt::Real=1e-3)
+function Fast_chaotic(xy0::Vector{<:Real}; A::Real, B::Real, λ::Real, ϵ::Real=0.1, T::Real=100, dt::Real=1e-3)
 
   # defining ode; specifically written for DifferentialEquations.jl
   function Fast_chaotic_ode!(du, u, p, t)
@@ -734,9 +721,9 @@ end
 
 # general limit process for fast chaotic noise
 @doc raw"""
-    Fast_chaotic_∞(X0::Real; <keyword arguments>)
+    Fast_chaotic(X0::Real; <keyword arguments>)
 
-Return a one-dimensional process described through a limit fast chaotic noise, homogenized from the multiscale fast chaotic noise system figuring in [`Fast_chaotic_ϵ`](@ref), starting at `X0` as a discretized time series.
+Return a one-dimensional process described through a limit fast chaotic noise, homogenized from the multiscale fast chaotic noise system, starting at `X0` as a discretized time series.
 
 The corresponding stochastic differential equation is defined for ``t \in [0,T]`` as
 ```math
@@ -759,12 +746,9 @@ which requires to be numerically computed or estimated through data. A simple Eu
 - `B::Real`:          positive drift parameter ``B``.
 - `σ::Real`:          positive diffusion parameter ``σ``.
 - `T::Real=100`:      time horizon of time series.
-- `dt:Real=1e-3`:     time discretization step used in the Euler-Maruyama scheme.
-
----
-See also [`Fast_chaotic_ϵ`](@ref).
+- `dt::Real=1e-3`:    time discretization step used in the Euler-Maruyama scheme.
 """
-function Fast_chaotic_∞(X0::Real; A::Real, B::Real, σ::Real, T::Real=100, dt::Real=1e-3)
+function Fast_chaotic(X0::Real; A::Real, B::Real, σ::Real, T::Real=100, dt::Real=1e-3)
 
   N = convert(Int64, T/dt) - 1
 
@@ -795,7 +779,7 @@ Generate a plot of a 2-dimensional (slow + fast scale process) multiscale time s
 ```julia
 # quadratic potential V with sine oscillation p
 T = 10.0
-trajectory = Langevin_ϵ(1.0, func_config=LDO(), α=2.0, σ=1.0, ϵ=0.1, T=T)
+trajectory = Langevin(1.0, -4.0, func_config=LDO(), α=2.0, σ=1.0, ϵ=0.1, T=T)
 fig = produce_trajectory(trajectory, T)
 ```
 """
@@ -842,7 +826,7 @@ Generate a plot of a 4-dimensional (slow + fast scale process) multiscale time s
 # Examples
 ```julia
 # quadratic potential V and fast separable oscillating part in 2D
-trajectory = Langevin_ϵ_2D([-5.0, -5.0], func_config=(x-> cos(x), x -> 1/2*cos(x)), M=[4 2;2 3], σ=5.0, ϵ=0.05, T=10.0)
+trajectory = Langevin([-5.0, -5.0], [10.0, 10.0], func_config=(x-> cos(x), x -> 1/2*cos(x)), M=[4 2;2 3], σ=5.0, ϵ=0.05, T=10.0)
 fig = produce_trajectory(trajectory)
 ```
 """
