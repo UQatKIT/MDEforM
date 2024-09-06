@@ -15,9 +15,9 @@
 ## Fast Ornstein-Uhlenbeck ##
 
 # general mutliscale system for fast Ornstein-Uhlenbeck process
-# @doc raw""" """ is a combo to avoid escaping latex commands as \\epsilon
+# @doc raw""" """ is a command combo to avoid escaping latex commands as \\epsilon
 @doc raw"""
-    Fast_OU_ϵ(x0, y0; <keyword arguments>)
+    Fast_OU_ϵ(x0::Real, y0::Real; <keyword arguments>)
 
 Return a 2-dimensional fast-slow Ornstein-Uhlenbeck process starting at `(x0, y0)` as a discretized time series.
 
@@ -32,12 +32,12 @@ Here, ``σ'`` is the first derivative of ``σ``. A simple Euler-Maruyama discret
 
 ---
 # Arguments
-- `x0::Real`:         initial point ``x_0`` of slow process ``X_ϵ``.
-- `y0::Real`:         initial point ``y_0`` of fast process ``Y_ϵ``.
-- `func_config`:      collection of the functions ``h, σ`` and ``σ'`` as a tuple.
-- `ϵ::Real=0.1`:      positive small scale parameter ``ϵ``.
-- `T::Real=100`:      time horizon of time series.
-- `dt:Real=1e-3`:     time discretization step used in the Euler-Maruyama scheme.
+- `x0::Real`:                             initial point ``x_0`` of slow process ``X_ϵ``.
+- `y0::Real`:                             initial point ``y_0`` of fast process ``Y_ϵ``.
+- `func_config::Tuple{3, Function}`:      collection of the functions ``h, σ`` and ``σ'``.
+- `ϵ::Real=0.1`:                          positive small scale parameter ``ϵ``.
+- `T::Real=100`:                          time horizon of time series.
+- `dt:Real=1e-3`:                         time discretization step used in the Euler-Maruyama scheme.
 
 ---
 # Examples
@@ -62,7 +62,7 @@ fig = produce_trajectory_1D(trajectory, T)
 ---
 See also [`Fast_OU_∞`](@ref), [`LDA`](@ref), [`NLDAM`](@ref), [`NSDP`](@ref).
 """
-function Fast_OU_ϵ(x0, y0; func_config, ϵ=0.1, T=100, dt=1e-3)
+function Fast_OU_ϵ(x0::Real, y0::Real; func_config::Tuple{3, Function}, ϵ::Real=0.1, T::Real=100, dt::Real=1e-3)
     h = func_config[1]
     σ = func_config[2]
     σ_prime = func_config[3]
