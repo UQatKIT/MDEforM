@@ -17,7 +17,7 @@ export Langevin_ϵ, Langevin_∞, K, LDO, NLDO
 export Langevin_ϵ_2D, Langevin_∞_2D
 export Burger_ϵ, Burger_∞
 export Fast_chaotic_ϵ, Fast_chaotic_∞
-export produce_trajectory_1D, produce_trajectory_2D
+export produce_trajectory
 
 include("multiscale_limit_pairs.jl")
 

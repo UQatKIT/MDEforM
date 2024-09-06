@@ -74,13 +74,15 @@ When ``\epsilon`` converges to zero, then, by homogenization theory, the process
 ```
 where ``K>0`` is a corrective constant that comes from the cell problem of the homogenization, see also [`K`](@ref). The task is to estimate the parameter ``\vartheta := \alpha K`` 
 through data that comes in form of a long trajectory of the process ``X_\epsilon`` with "small" ``\epsilon > 0``. We will use the [`MDE`](@ref) for the estimation. First, we generate synthetic
-data with the function [`Langevin_ϵ`](@ref). The plot of a trajectory, created with [`produce_trajectory_1D`](@ref), looks like the following.
+data with the function [`Langevin_ϵ`](@ref). The plot of a trajectory, created with [`produce_trajectory`](@ref), looks like the following.
 ```@example
 # quadratic potential V with sine oscillation p
 using MDEforM   # hide
+import Random   # hide
+Random.seed!(1111)  # hide
 T = 10
 trajectory = Langevin_ϵ(5.0, func_config=LDO(), α=2.0, σ=1.0, ϵ=0.1, T=T)
-fig = produce_trajectory_1D(trajectory, T)
+fig = produce_trajectory(trajectory, T)
 ```
 
 We now increase the time horizon ``T`` to obtain accurate estimates for ``\vartheta``.
