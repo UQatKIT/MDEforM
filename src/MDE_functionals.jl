@@ -18,7 +18,7 @@
 
 # characteristic function of gaussian density for estimation, see calculations from main manuscript
 @doc raw"""
-    k(x, β)
+    k(x::Real, β::Real)
 
 Return `β` and function value of the characteristic function of a centered Gaussian density with standard deviation `β` at the point `x` as a tuple.
 
@@ -28,14 +28,14 @@ This characteristic function is given by
   k_\beta(x) = \exp\left( -\frac{\beta^2 x^2}{2} \right), \quad x \in \R.
 \end{aligned}
 ```
-It is used in the definition of the MDE and thoroughly outlined in the main manuscript in the numerics section.
+It is used in the definition of the MDE and is thoroughly outlined in the main manuscript in the numerics section.
 
 ---
 # Arguments
 - `x::Real`:         argument ``x`` at which to evaluate the function.
 - `β::Real`:         positive number ``\beta``.
 """
-function k(x, β=1)
+function k(x::Real, β::Real=1)
   exp(-β^2*x^2/2), β
 end
 
@@ -81,7 +81,7 @@ end
 
 # complete cost functional, parallel version via multi-threading
 @doc raw"""
-    Δ(data, ϑ, Σ, V)
+    Δ(data::Vector{<:Real}, ϑ::Real, Σ::Real, V::Function)
 
 Compute cost functional for given `data` and parameter values `ϑ` and `Σ`.
 
@@ -107,10 +107,10 @@ See the main manuscript for details on this functional. It is the core object of
 
 ---
 # Arguments
-- `data::Vector{Real}`:         one-dimensional time series ``X_ϵ``.
+- `data::Vector{<:Real}`:       one-dimensional time series ``X_ϵ``.
 - `ϑ::Real`:                    positive drift coefficient ``\vartheta``.
 - `Σ::Real`:                    positive diffusion coefficient ``\Sigma``.
-- `V`:                          defining potential function ``V`` for the invariant density.
+- `V::Function`:                defining potential function ``V`` for the invariant density.
 
 ---
 # Examples
@@ -123,11 +123,8 @@ julia> using MDEforM
 julia> data = Langevin(1.0, 0.0, func_config=NLDO(), α=2.0, σ=1.0, ϵ=0.1, T=100)[1]
 julia> Δ(data, 1, 1, NLDO()[1])
 ```
-
----
-See also [`Δ_Gaussian1D`](@ref), [`Δ_Gaussian2D`](@ref).
 """
-function Δ(data, ϑ, Σ, V)
+function Δ(data::Vector{<:Real}, ϑ::Real, Σ::Real, V::Function)
   time_stamp = Dates.format(now(), "HH:MM:SS")
   @info "⊙ $(time_stamp) - Functional call with parameter values ($(round(ϑ, digits=6)), $(round(Σ, digits=6)))."
   convol(ϑ, Σ, V) + multi_time_integral(data, ϑ, Σ, V)
@@ -136,7 +133,7 @@ end
 ## Gaussian case in 1D via exact distance formula ##
 
 @doc raw"""
-    Δ_Gaussian1D(data, ϑ, Σ)
+    Δ(data::Vector{<:Real}, ϑ::Real, Σ::Real)
 
 Compute cost functional for given one-dimensonal `data` and parameter values `ϑ` and `Σ` in the case where the invariant density of the homogenized limit SDE is centered Gaussian.
 
@@ -155,7 +152,7 @@ See the main manuscript for details on this functional. It is the core object of
 
 ---
 # Arguments
-- `data::Vector{Real}`:         one-dimensional time series ``X_ϵ``.
+- `data::Vector{<:Real}`:       one-dimensional time series ``X_ϵ``.
 - `ϑ::Real`:                    positive drift coefficient ``\vartheta``.
 - `Σ::Real`:                    positive diffusion coefficient ``\Sigma``.
 
@@ -164,13 +161,10 @@ See the main manuscript for details on this functional. It is the core object of
 ```julia-repl
 julia> using MDEforM
 julia> data = Langevin(1.0, 0.0, func_config=LDO(), α=2.0, σ=1.0, ϵ=0.1, T=100)[1]
-julia> Δ_Gaussian1D(data, 1, 1)
+julia> Δ(data, 1, 1)
 ```
-
----
-See also [`Δ`](@ref), [`Δ_Gaussian2D`](@ref).
 """
-function Δ_Gaussian1D(data, ϑ, Σ)
+function Δ(data::Vector{<:Real}, ϑ::Real, Σ::Real)
   β = k(0)[2]
   δ1 = 1/sqrt(1 + β^2*Σ/ϑ)
   δ2 = 1/sqrt(1 + 2β^2*Σ/ϑ)
@@ -188,7 +182,7 @@ end
 
 # transforming 2D data into 1D data for the exponential in the distance Δ and 
 # calculating a determinant relevant for the distance formula;
-# input arguments are the same as in Δ_Gaussian2D, see docs
+# input arguments are the same as in Δ, see docs
 # most appearing functions come from LinearAlgebra.jl
 function transf_data_2D(data, ϑ, Σ)
   d = length(data[:,1])   # d=2 in our considered case
@@ -209,7 +203,7 @@ function transf_data_2D(data, ϑ, Σ)
 end
 
 @doc raw"""
-    Δ_Gaussian2D(data, ϑ, Σ)
+    Δ(data::Array{<:Real, 2}, ϑ::Array{<:Real, 2}, Σ::Array{<:Real, 2})
 
 Compute cost functional for given two-dimensonal `data` and parameter values `ϑ` and `Σ` in the case where the invariant density of the homogenized limit SDE is centered Gaussian.
 
@@ -229,9 +223,9 @@ and is given by the covariance matrix of the invariant Gaussian density, and ``\
 
 ---
 # Arguments
-- `data::Vector{Real}`:         two-dimensional time series ``X_ϵ``.
-- `ϑ::Array{Real}`:             positive definite drift matrix ``\vartheta \in \mathbb{R}^{2 \times 2}``.
-- `Σ::Array{Real}`:             positive definite diffusion matrix ``\Sigma \in \mathbb{R}^{2 \times 2}``.
+- `data::Array{<:Real, 2}`:         two-dimensional time series ``X_ϵ``.
+- `ϑ::Array{<:Real, 2}`:            positive definite drift matrix ``\vartheta \in \mathbb{R}^{2 \times 2}``.
+- `Σ::Array{<:Real, 2}`:            positive definite diffusion matrix ``\Sigma \in \mathbb{R}^{2 \times 2}``.
 
 ---
 # Examples
@@ -243,13 +237,10 @@ julia> data = Langevin([-5.0, -5.0], [0.0, 0.0], func_config=(x-> cos(x), x -> 1
 julia> CorrK = [K(x-> cos(x), σ) 0 ; 0 K(x -> 1/2*cos(x), σ)]
 julia> ϑ = CorrK*M
 julia> Σ = σ*CorrK
-julia> Δ_Gaussian2D(data, ϑ, Σ)
+julia> Δ(data, ϑ, Σ)
 ```
-
----
-See also [`Δ`](@ref), [`Δ_Gaussian1D`](@ref).
 """
-function Δ_Gaussian2D(data, ϑ, Σ)
+function Δ(data::Array{<:Real, 2}, ϑ::Array{<:Real, 2}, Σ::Array{<:Real, 2})
   #time_stamp = Dates.format(now(), "HH:MM:SS")
   #@info "⊙ $(time_stamp) - Function call with parameter value $(ϑ)."
   d = length(data[:,1])

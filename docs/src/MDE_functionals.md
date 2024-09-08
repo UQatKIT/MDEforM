@@ -27,8 +27,6 @@ where ``k(x) :=\exp(-\beta^2 |x|_2^2/2)`` is the characteristic function of ``\v
 ```@docs
 k
 Δ
-Δ_Gaussian1D
-Δ_Gaussian2D
 ```
 
 ## Gradients of Cost Functionals
@@ -36,7 +34,6 @@ k
 ```@docs
 Δ_grad_ϑ
 Δ_grad_Σ
-Δ_Gaussian1D_grad
 ```
 
 ## Index

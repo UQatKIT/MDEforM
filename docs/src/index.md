@@ -2,7 +2,7 @@
 
 This is the documentation website for "MDE for Multiscale"! For detailed theoretical and numerical information on the minimum distance estimation (MDE) method please refer to the accompanying article XXX.
 
-In order to use the module, clone the [GitHub repository](https://github.com/UQatKIT/MDEforM) to your local machine, navigate through the Terminal to the root directory containing the
+In order to use the package, clone the [GitHub repository](https://github.com/UQatKIT/MDEforM) to your local machine, navigate through the Terminal to the root directory containing the
 Project.toml file, start Julia and activate the project in the Terminal via
 ```
 $ julia --project=.
@@ -11,16 +11,16 @@ Then hit ] and instantiate the packages in the project
 ```julia-repl
 (MDEforM) pkg> instantiate 
 ```
-You may now use the module's functionality
+You may now use the package's functionality
 ```julia-repl
 julia> using MDEforM
 ```
-The functions listed under [Index](@ref Index_index) are exported by the module and thorough documentation of these functions 
-can be found in the following list of [Contents](@ref Contents_index).
+The functions listed under [Index](@ref Index_index) are exported by the package and thorough documentation of these functions 
+can be found in the list of [Contents](@ref Contents_index) at the bottom of this page.
 
 ## Toy Example
 
-We want to provide a small example to illustrate the main functionality of the module. We start from the following 2-dimensional fast-slow system of stochastic differential equations (SDE)
+We want to provide a small example to illustrate the main functionality of the package. We start from the following 2-dimensional fast-slow system of stochastic differential equations (SDE)
 ```math
 \begin{aligned}
   dX_ϵ(t) = -α V'(X_ϵ(t)) - \frac{1}{ϵ} p'\left( \frac{X_ϵ(t)}{ϵ} \right) dt  + \sqrt{2 σ} dU(t), \quad &X_ϵ(0) = x_0, \\

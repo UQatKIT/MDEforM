@@ -55,7 +55,7 @@ end
   
 # complete gradient of cost functional with respect to ϑ, parallel version via multi-threading
 @doc raw"""
-    Δ_grad_ϑ(data, ϑ, Σ, V)
+    Δ_grad_ϑ(data::Vector{<:Real}, ϑ::Real, Σ::Real, V::Function)
 
 Compute gradient of cost functional [`Δ`](@ref) with respect to `ϑ` for given `data` and parameter values `ϑ` and `Σ` and a potential `V`.
 
@@ -75,10 +75,10 @@ obtained from a multiscale SDE, ``\mu`` is the invariant density of the homogeni
 
 ---
 # Arguments
-- `data::Vector{Real}`:         one-dimensional time series ``X_ϵ``.
+- `data::Vector{<:Real}`:       one-dimensional time series ``X_ϵ``.
 - `ϑ::Real`:                    drift coefficient ``\vartheta``.
 - `Σ::Real`:                    positive diffusion coefficient ``\Sigma``.
-- `V`:                          defining potential function ``V`` for the invariant density.
+- `V::Function`:                defining potential function ``V`` for the invariant density.
 
 ---
 # Examples
@@ -95,7 +95,7 @@ julia> Δ_grad_ϑ(data, 1, 1, NLDO()[1])
 ---
 See also [`Δ`](@ref).
 """
-function Δ_grad_ϑ(data, ϑ, Σ, V)
+function Δ_grad_ϑ(data::Vector{<:Real}, ϑ::Real, Σ::Real, V::Function)
     time_stamp = Dates.format(now(), "H:MM:SS")
     @info "∇ $(time_stamp) - Gradient call with parameter values ($(round(ϑ, digits=6)), $(round(Σ, digits=6)))."
     ∂ϑ_convol(ϑ, Σ, V) + ∂ϑ_multi_time_integral(data, ϑ, Σ, V)
@@ -144,7 +144,7 @@ end
   
 # complete gradient of cost functional with respect to Σ, parallel version via multi-threading
 @doc raw"""
-    Δ_grad_Σ(data, ϑ, Σ, V)
+    Δ_grad_Σ(data::Vector{<:Real}, ϑ::Real, Σ::Real, V::Function)
 
 Compute gradient of cost functional [`Δ`](@ref) with respect to `Σ` for given `data` and parameter values `ϑ` and `Σ` and a potential `V`.
 
@@ -164,10 +164,10 @@ obtained from a multiscale SDE, ``\mu`` is the invariant density of the homogeni
 
 ---
 # Arguments
-- `data::Vector{Real}`:         one-dimensional time series ``X_ϵ``.
+- `data::Vector{<:Real}`:       one-dimensional time series ``X_ϵ``.
 - `ϑ::Real`:                    drift coefficient ``\vartheta``.
 - `Σ::Real`:                    positive diffusion coefficient ``\Sigma``.
-- `V`:                          defining potential function ``V`` for the invariant density.
+- `V::Function`:                defining potential function ``V`` for the invariant density.
 
 ---
 # Examples
@@ -184,7 +184,7 @@ julia> Δ_grad_Σ(data, 1, 1, NLDO()[1])
 ---
 See also [`Δ`](@ref).
 """
-function Δ_grad_Σ(data, ϑ, Σ, V)
+function Δ_grad_Σ(data::Vector{<:Real}, ϑ::Real, Σ::Real, V::Function)
     time_stamp = Dates.format(now(), "H:MM:SS")
     @info "∇ $(time_stamp) - Gradient call with parameter values ($(round(ϑ, digits=6)), $(round(Σ, digits=6)))."
     ∂Σ_convol(ϑ, Σ, V) + ∂Σ_multi_time_integral(data, ϑ, Σ, V)
@@ -193,9 +193,9 @@ end
 ## Gaussian case in 1D ##
 
 @doc raw"""
-    Δ_Gaussian1D_grad(data, ϑ, Σ)
+    Δ_grad_ϑ(data::Vector{<:Real}, ϑ::Real, Σ::Real)
 
-Compute gradient of cost functional [`Δ_Gaussian1D`](@ref) for given one-dimensonal `data` and parameter values `ϑ` and `Σ`.
+Compute gradient of cost functional [`Δ`](@ref) with respect to `ϑ` for given one-dimensonal `data` and parameter values `ϑ` and `Σ`.
 
 A properly discretized version of the gradient of the cost functional, given by
 ```math
@@ -218,13 +218,13 @@ is implemented. Here, ``X_ϵ`` is a one-dimensional time series of length ``T``,
 ```julia-repl
 julia> using MDEforM
 julia> data = Langevin(1.0, 0.0, func_config=LDO(), α=2.0, σ=1.0, ϵ=0.1, T=100)[1]
-julia> Δ_Gaussian1D_grad(data, 1, 1)
+julia> Δ_grad_ϑ(data, 1, 1)
 ```
 
 ---
-See also [`Δ_Gaussian1D`](@ref).
+See also [`Δ`](@ref).
 """
-function Δ_Gaussian1D_grad(data, ϑ, Σ)
+function Δ_grad_ϑ(data::Vector{<:Real}, ϑ::Real, Σ::Real)
     β = k(0)[2]
     δ1 = 1/sqrt(1 + β^2*Σ/ϑ)
     δ2 = β^2*Σ/(ϑ^3*(1+β^2*Σ/ϑ)^(5/2))

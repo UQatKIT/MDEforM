@@ -25,11 +25,9 @@ export μ, ∂ϑ_μ, ∂Σ_μ
 include("invariant_densities.jl")
 
 export Δ, k
-export Δ_Gaussian1D, Δ_Gaussian2D
 
 include("MDE_functionals.jl")
 
-export Δ_Gaussian1D_grad
 export Δ_grad_ϑ, Δ_grad_Σ
 
 include("MDE_gradients.jl")
