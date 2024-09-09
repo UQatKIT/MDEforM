@@ -34,7 +34,7 @@ Here, ``σ'`` is the first derivative of ``σ``. A simple Euler-Maruyama discret
 # Arguments
 - `x0::Real`:                             initial point ``x_0`` of slow process ``X_ϵ``.
 - `y0::Real`:                             initial point ``y_0`` of fast process ``Y_ϵ``.
-- `func_config::NTuple{3, Function}`:     collection of the functions ``h, σ`` and ``σ'``.
+- `func_config`:                          collection of the functions ``h, σ`` and ``σ'``.
 - `ϵ::Real=0.1`:                          positive small scale parameter ``ϵ``.
 - `T::Real=100`:                          time horizon of time series.
 - `dt::Real=1e-3`:                        time discretization step used in the Euler-Maruyama scheme.
@@ -62,7 +62,7 @@ fig = produce_trajectory(trajectory, T)
 ---
 See also [`LDA`](@ref), [`NLDAM`](@ref), [`NSDP`](@ref).
 """
-function Fast_OU(x0::Real, y0::Real; func_config::Tuple{3, Function}, ϵ::Real=0.1, T::Real=100, dt::Real=1e-3)
+function Fast_OU(x0::Real, y0::Real; func_config, ϵ::Real=0.1, T::Real=100, dt::Real=1e-3)
     h = func_config[1]
     σ = func_config[2]
     σ_prime = func_config[3]
@@ -101,7 +101,7 @@ A simple Euler-Maruyama discretization is implemented for the generation of the 
 ---
 # Arguments
 - `X0::Real`:                               initial point ``X_0`` of limit process ``X``.
-- `func_config::NTuple{3, Function}`:       collection of the functions ``\bar{h}`` and ``σ``.
+- `func_config`:                            collection of the functions ``\bar{h}`` and ``σ``.
 - `T::Real=100`:                            time horizon of time series.
 - `dt::Real=1e-3`:                          time discretization step used in the Euler-Maruyama scheme.
 
@@ -116,7 +116,7 @@ julia> Fast_OU(1.0, func_config=(h_aver, σ))
 ---
 See also [`LDA`](@ref), [`NLDAM`](@ref), [`NSDP`](@ref).
 """
-function Fast_OU(X0::Real; func_config::NTuple{2, Function}, T::Real=100, dt::Real=1e-3)
+function Fast_OU(X0::Real; func_config, T::Real=100, dt::Real=1e-3)
   h_aver = func_config[1]
   σ = func_config[2]
 

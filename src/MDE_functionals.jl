@@ -203,7 +203,7 @@ function transf_data_2D(data, ϑ, Σ)
 end
 
 @doc raw"""
-    Δ(data::Array{<:Real, 2}, ϑ::Array{<:Real, 2}, Σ::Array{<:Real, 2})
+    Δ(data::Array{<:Real}, ϑ::Array{<:Real}, Σ::Array{<:Real})
 
 Compute cost functional for given two-dimensonal `data` and parameter values `ϑ` and `Σ` in the case where the invariant density of the homogenized limit SDE is centered Gaussian.
 
@@ -223,9 +223,9 @@ and is given by the covariance matrix of the invariant Gaussian density, and ``\
 
 ---
 # Arguments
-- `data::Array{<:Real, 2}`:         two-dimensional time series ``X_ϵ``.
-- `ϑ::Array{<:Real, 2}`:            positive definite drift matrix ``\vartheta \in \mathbb{R}^{2 \times 2}``.
-- `Σ::Array{<:Real, 2}`:            positive definite diffusion matrix ``\Sigma \in \mathbb{R}^{2 \times 2}``.
+- `data::Array{<:Real}`:         two-dimensional time series ``X_ϵ``.
+- `ϑ::Array{<:Real}`:            positive definite drift matrix ``\vartheta \in \mathbb{R}^{2 \times 2}``.
+- `Σ::Array{<:Real}`:            positive definite diffusion matrix ``\Sigma \in \mathbb{R}^{2 \times 2}``.
 
 ---
 # Examples
@@ -240,7 +240,7 @@ julia> Σ = σ*CorrK
 julia> Δ(data, ϑ, Σ)
 ```
 """
-function Δ(data::Array{<:Real, 2}, ϑ::Array{<:Real, 2}, Σ::Array{<:Real, 2})
+function Δ(data::Array{<:Real}, ϑ::Array{<:Real}, Σ::Array{<:Real})
   #time_stamp = Dates.format(now(), "HH:MM:SS")
   #@info "⊙ $(time_stamp) - Function call with parameter value $(ϑ)."
   d = length(data[:,1])

@@ -81,7 +81,7 @@ function MDE(data::Vector{<:Real}, limit_model::String, prior_parameter::Real, �
  
     @show optim_res
     println("✪ MDE value: $(round(Optim.minimizer(optim_res)[1], digits = 6))")
-    Optim.minimizer(optim_res)
+    Optim.minimizer(optim_res)[1]
 end
 
 ## limit model: 1-dimensional Langevin process with a general potential V ##
@@ -164,7 +164,7 @@ function MDE(data::Vector{<:Real}, limit_model::String, V::Function, prior_param
  
     @show optim_res
     println("✪ MDE value: $(round(Optim.minimizer(optim_res)[1], digits = 6))")
-    Optim.minimizer(optim_res)
+    Optim.minimizer(optim_res)[1]
 end
 
 ## limit model: 2-dimensional Ornstein-Uhlenbeck process / Langevin process with a quadratic potential ##
@@ -187,10 +187,10 @@ The initial point `ϑ_initial` must satisfy certain parameter constraints since 
 
 ---
 # Arguments
-- `data::::Array{<:Real, 2}`:             two-dimensional time series ``X_ϵ``.
-- `limit_diffusion::Array{<:Real, 2}`:    positive definite limit diffusion matrix ``\Sigma \in \mathbb{R}^{2 \times 2}``.
-- `ϑ_initial::Array{<:Real, 2}`:          initial point ``\vartheta_0 \in \mathbb{R}^{2 \times 2}`` of the numerical optimization procedure.
-- 'verbose::Bool=false':                if `verbose = true`, then detailed information on the optimization will be printed in real-time.
+- `data::Array{<:Real, 2}`:                 two-dimensional time series ``X_ϵ``.
+- `limit_diffusion::Array{<:Real, 2}`:      positive definite limit diffusion matrix ``\Sigma \in \mathbb{R}^{2 \times 2}``.
+- `ϑ_initial::Array{<:Real, 2}`:            initial point ``\vartheta_0 \in \mathbb{R}^{2 \times 2}`` of the numerical optimization procedure.
+- 'verbose::Bool=false':                    if `verbose = true`, then detailed information on the optimization will be printed in real-time.
 
 ---
 # Examples
