@@ -1,7 +1,7 @@
 using Documenter, MDEforM
 
 makedocs(
-    sitename = "MDE for Multiscale Documentation",
+    sitename = "MDEforM.jl",
     modules = [MDEforM],
     authors = "Jaroslav Borodavka",
     pages = [
