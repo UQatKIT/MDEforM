@@ -15,5 +15,5 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/UQatKIT/MDEforM.git",
+    repo = "github.com/UQatKIT/MDEforM.jl.git",
 )
