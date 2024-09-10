@@ -1,1 +1,1 @@
-Check the [documentation](https://uqatkit.github.io/MDEforM/) for the usage of the package and its functionality.
+Check the [documentation](https://uqatkit.github.io/MDEforM.jl/) for the usage of the package and its functionality.
